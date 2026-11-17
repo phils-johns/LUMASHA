@@ -1,0 +1,43 @@
+# ============================================================
+# LUMASHA Smart — déploiement du SITE PUBLIC sur Netlify
+# ============================================================
+#
+# Ce fichier configure l'hébergement du site public (lecture seule).
+# Il lit l'instantané publié dans Supabase par la caisse.
+#
+# ⚠️ La CAISSE (base SQLite) ne se déploie PAS sur Netlify : la plateforme
+#    n'offre pas de disque persistant. Elle tourne sur un hôte Node persistant
+#    (VPS, Docker, Render, Fly, Railway). Voir DEPLOIEMENT.md.
+
+[build]
+  # Netlify détecte Next.js et applique automatiquement son runtime
+  # (@netlify/plugin-nextjs, mode standalone). Ne pas épingler le plugin.
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Next.js 16 exige Node >= 20.9. Node 22 = LTS, disponible sur Netlify.
+  NODE_VERSION = "22"
+  # Bascule l'application en site public : lecture seule de Supabase.
+  LUMASHA_BACKEND = "supabase"
+  # URL du projet (non secrète, également exposée au navigateur).
+  SUPABASE_URL = "https://okfazchidjcakeotcult.supabase.co"
+  # Identité boutique (publique, inlinée dans le bundle au build).
+  NEXT_PUBLIC_WA_NUMBER = "+22893628030"
+  NEXT_PUBLIC_STAND = "AR114"
+
+# --- En-têtes de sécurité (déjà posés par next.config.ts, doublés ici) ---
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ============================================================
+# Variable à définir dans l'interface Netlify (jamais dans ce fichier) :
+#   SUPABASE_SERVICE_ROLE_KEY = <clé secrète du projet Supabase>
+#
+# Netlify → Site configuration → Environment variables → Add a variable
+#   Scope: Builds + Functions (server-side uniquement, sans préfixe NEXT_PUBLIC_)
+# ============================================================

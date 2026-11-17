@@ -1,0 +1,19 @@
+# Contexte de build Docker — on n'embarque ni la base locale ni les artefacts.
+node_modules
+.next
+data
+.git
+.gitignore
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*
+!.env.example
+npm-debug.log*
+README.md
+AGENTS.md
+tsconfig.tsbuildinfo
+Dockerfile
+docker-compose.yml
+.dockerignore
